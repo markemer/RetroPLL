@@ -53,7 +53,7 @@ jobs:
               path: |
                 /home/runner/work/caravel_user_project/caravel_user_project/mpw_precheck_result/logs/*
 
-  mpw_precheck_sky130B:
+    mpw_precheck_sky130B:
         timeout-minutes: 720
         runs-on: ubuntu-latest
         steps:

@@ -1,37 +1,27 @@
 name: CI
-
 on:
-  # Runs on Every Push
   push:
-  # Runs on Pull Requests
   pull_request:
   workflow_dispatch:
-
 jobs:
     mpw_precheck_sky130A:
         timeout-minutes: 720
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v2
-
           - name: Set up QEMU
             uses: docker/setup-qemu-action@v1
-
           - name: Set up Docker Buildx
             uses: docker/setup-buildx-action@v1
-
           - name: Export PDK ROOT
             run: |
               echo "PDK_ROOT=/home/runner/work/pdk" >> $GITHUB_ENV
-
           - name: Export PDKPATH
             run: echo "PDKPATH=/home/runner/work/pdk/sky130A" >> $GITHUB_ENV
-
           - name: Download PDK
             run: |
               MPW_TAG=main CARAVEL_LITE=0 make install
               make pdk-with-volare
-          
           - name: Run MPW-Precheck
             run: |
               export INPUT_DIRECTORY=$(pwd)
@@ -44,7 +34,6 @@ jobs:
               if ! [[ $cnt ]]; then cnt=0; fi
               if [[ $cnt -eq 1 ]]; then exit 0; fi
               exit 2
-
           - name: upload failure logs
             if: failure()
             uses: actions/upload-artifact@v2
@@ -52,31 +41,24 @@ jobs:
               name: error
               path: |
                 /home/runner/work/caravel_user_project/caravel_user_project/mpw_precheck_result/logs/*
-
     mpw_precheck_sky130B:
         timeout-minutes: 720
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@v2
-
+          - uses: actions/checkout@v3
           - name: Set up QEMU
             uses: docker/setup-qemu-action@v1
-
           - name: Set up Docker Buildx
             uses: docker/setup-buildx-action@v1
-
           - name: Export PDK ROOT
             run: |
               echo "PDK_ROOT=/home/runner/work/pdk" >> $GITHUB_ENV
-
           - name: Export PDKPATH
             run: echo "PDKPATH=/home/runner/work/pdk/sky130B" >> $GITHUB_ENV
-
           - name: Download PDK
             run: |
               MPW_TAG=main CARAVEL_LITE=0 make install
               make pdk-with-volare
-          
           - name: Run MPW-Precheck
             run: |
               export INPUT_DIRECTORY=$(pwd)
@@ -89,7 +71,6 @@ jobs:
               if ! [[ $cnt ]]; then cnt=0; fi
               if [[ $cnt -eq 1 ]]; then exit 0; fi
               exit 2
-
           - name: upload failure logs
             if: failure()
             uses: actions/upload-artifact@v2
@@ -97,4 +78,3 @@ jobs:
               name: error
               path: |
                 /home/runner/work/caravel_user_project/caravel_user_project/mpw_precheck_result/logs/*
-
